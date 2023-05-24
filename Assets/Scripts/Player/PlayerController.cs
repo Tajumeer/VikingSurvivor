@@ -117,7 +117,7 @@ namespace Player
 
         private void OnDrawGizmos()
         {
-            throw new NotImplementedException();
+           
         }
 
         #endregion
