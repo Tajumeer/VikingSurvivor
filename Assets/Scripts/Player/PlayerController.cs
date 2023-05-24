@@ -15,11 +15,32 @@ namespace Player
         [Header("Player Attacks")] 
         [SerializeField] private float m_attackDamage;
         [SerializeField] private float m_attackSpeed;
+        [SerializeField] private float m_rotationSpeed;
+        [SerializeField] private float m_maxForce;
         
+        private Vector3 m_rotationTarget;
         private Vector2 m_move;
         private Vector2 m_look;
 
+        private Rigidbody m_rb;
+        
         #endregion
+
+        private void Start()
+        {
+            m_rb = GetComponent<Rigidbody>();
+        }
+
+        private void Update()
+        {
+ 
+        }
+
+        private void FixedUpdate()
+        {
+            Move();
+            Look();
+        }
 
         #region CallbackFunctions
 
@@ -69,12 +90,14 @@ namespace Player
 
         private void Look()
         {
-            
+            Quaternion rotation = Quaternion.Euler(Vector3.up * m_move.x * m_rotationSpeed * Time.fixedDeltaTime);
+            m_rb.MoveRotation(m_rb.rotation * rotation);
         }
 
         private void Move()
         {
-            
+            Vector3 movement = new Vector3(m_move.x, 0f, m_move.y) * m_movementSpeed * Time.deltaTime;
+            m_rb.MovePosition(m_rb.position + transform.TransformDirection(movement));
         }
 
         private void Dash()
@@ -115,6 +138,11 @@ namespace Player
         
         #region Debug
 
+        private void DebugLogs()
+        {
+            Debug.Log(m_move);
+        }
+        
         private void OnDrawGizmos()
         {
            
