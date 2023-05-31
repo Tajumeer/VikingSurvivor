@@ -12,29 +12,33 @@ namespace Player
         [SerializeField] private float m_movementSpeed;
         [SerializeField] private float m_rotationSpeed;
         [SerializeField] private float m_dashRange;
+        [SerializeField] private float m_smoothAnim;
 
         [Header("Player Attacks")] 
         [SerializeField] private float m_attackDamage;
         [SerializeField] private float m_attackSpeed;
         [SerializeField] private float m_maxForce;
-
+        
         private Vector3 m_rotationTarget;
         private Vector2 m_move;
         private Vector2 m_look;
 
         private Rigidbody m_rb;
         private Camera m_mainCam;
+        private Animator m_animator;
 
         #endregion
 
         private void Start()
         {
             m_rb = GetComponent<Rigidbody>();
+            m_animator = GetComponent<Animator>();
             m_mainCam = Camera.main;
         }
 
         private void Update()
         {
+            AnimationSmoothing();
         }
 
         private void FixedUpdate()
@@ -147,11 +151,26 @@ namespace Player
 
         #endregion
 
+        #region AnimationFunctions
+
+        private void AnimationSmoothing()
+        {
+                        
+            float smoothedVertical = Mathf.SmoothStep(m_animator.GetFloat("Vertical"), m_move.y, m_smoothAnim * Time.deltaTime);
+            m_animator.SetFloat("Vertical", smoothedVertical);
+            
+            float smoothedHorizontal = Mathf.SmoothStep(m_animator.GetFloat("Horizontal"), m_move.x, m_smoothAnim * Time.deltaTime);
+            m_animator.SetFloat("Horizontal", smoothedHorizontal);
+          
+        }
+
+        #endregion
+
         #region Debug
 
         private void DebugLogs()
         {
-            Debug.Log(m_move);
+        
         }
 
         private void OnDrawGizmos()
